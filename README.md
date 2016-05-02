@@ -10,3 +10,5 @@ https://www.codementor.io/reactjs/tutorial/beginner-guide-setup-reactjs-environm
 ``.\node_modules\.bin\webpack -d``
 * Run http server
 `` http-server ``
+* Making webpack watch changes
+``.\node_modules\.bin\webpack -d --watch``
