@@ -20257,10 +20257,20 @@
 	    }
 	
 	    _createClass(Layout, [{
+	        key: "handleChange",
+	        value: function handleChange(e) {
+	            var title = e.target.value;
+	            this.props.changeTitle(title);
+	        }
+	    }, {
 	        key: "render",
 	        value: function render() {
-	            this.props.changeTitle("Welcome Alex!");
-	            return _react2.default.createElement(_Title2.default, { title: this.props.title });
+	            return _react2.default.createElement(
+	                "div",
+	                null,
+	                _react2.default.createElement(_Title2.default, { title: this.props.title }),
+	                _react2.default.createElement("input", { onChange: this.handleChange.bind(this) })
+	            );
 	        }
 	    }]);
 	
