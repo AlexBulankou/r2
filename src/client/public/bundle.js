@@ -94,9 +94,7 @@
 	        _react2.default.createElement(_reactRouter.Route, { path: 'settings', component: _Settings2.default })
 	    )
 	), app);
-	_AppInsights2.default.initialize({
-	    instrumentationKey: "9620fb22-8eb0-4575-80df-696352b08283"
-	});
+	_AppInsights2.default.initialize({ instrumentationKey: "9620fb22-8eb0-4575-80df-696352b08283" });
 	_AppInsights2.default.trackTrace("hello");
 
 /***/ },
