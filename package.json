@@ -17,6 +17,6 @@
     "react-router": "^2.4.0",
     "webpack": "^1.13.0",
     "applicationinsights-js": "*",
-    "script-loader": "*"
+    "imports-loader": "*"
   }
 }

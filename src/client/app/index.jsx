@@ -5,6 +5,7 @@ import Layout from "./pages/Layout.js";
 import Featured from "./pages/Featured.js";
 import Archives from "./pages/Archive.js";
 import Settings from "./pages/Settings.js";
+import AppInsights from "./components/AppInsights.js"
 
 const app = document.getElementById("app");
 ReactDOM.render(
@@ -17,3 +18,4 @@ ReactDOM.render(
         </Route>
     </Router>, 
  app);
+AppInsights.test();
