@@ -25,7 +25,7 @@ export default class AppInsights {
             document.head.appendChild(scriptElement);
 
             // capture initial cookie
-            appInsights.cookie = localDocument.cookie;
+            appInsights.cookie = document.cookie;
             appInsights.queue = [];
 
             var method = ["trackEvent", "trackException", "trackMetric", "trackPageView", "trackTrace", "trackAjax","setAuthenticatedUserContext","clearAuthenticatedUserContext"];
@@ -35,7 +35,7 @@ export default class AppInsights {
 
             // collect global errors
             if (!aiConfig.disableExceptionTracking) {
-                createLazyMethod("_onerror");
+               AppInsights._createLazyMethod("_onerror");
                 var originalOnError = window["_onerror"];
                 window[method] = function(message, url, lineNumber, columnNumber, error) {
                     var handled = originalOnError && originalOnError(message, url, lineNumber, columnNumber, error);

@@ -81,19 +81,22 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	//https://github.com/reactjs/react-router/blob/cbdc49442aba5cc6f225ff5546ac5f4a217fa4ec/docs/API.md
+	//http://www.pshrmn.com/tutorials/react/react-router/
+	
+	
 	var app = document.getElementById("app");
-	_reactDom2.default.render(_react2.default.createElement(
-	    _reactRouter.Router,
-	    { history: _reactRouter.hashHistory },
-	    _react2.default.createElement(
-	        _reactRouter.Route,
-	        { path: '/', component: _Layout2.default },
-	        _react2.default.createElement(_reactRouter.IndexRoute, { component: _Featured2.default }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'archives', component: _Archive2.default }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'featured', component: _Featured2.default }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'settings', component: _Settings2.default })
-	    )
-	), app);
+	var routes = _react2.default.createElement(
+	       _reactRouter.Route,
+	       { path: '/', component: _Layout2.default },
+	       _react2.default.createElement(_reactRouter.IndexRoute, { component: _Featured2.default }),
+	       _react2.default.createElement(_reactRouter.Route, { path: 'archives', component: _Archive2.default }),
+	       _react2.default.createElement(_reactRouter.Route, { path: 'featured', component: _Featured2.default }),
+	       _react2.default.createElement(_reactRouter.Route, { path: 'settings', component: _Settings2.default })
+	);
+	
+	_reactDom2.default.render(_react2.default.createElement(_reactRouter.Router, { history: _reactRouter.hashHistory, routes: routes }), app);
+	
 	_AppInsights2.default.initialize({ instrumentationKey: "9620fb22-8eb0-4575-80df-696352b08283" });
 	_AppInsights2.default.trackTrace("hello");
 
@@ -26153,7 +26156,7 @@
 	                document.head.appendChild(scriptElement);
 	
 	                // capture initial cookie
-	                appInsights.cookie = localDocument.cookie;
+	                appInsights.cookie = document.cookie;
 	                appInsights.queue = [];
 	
 	                var method = ["trackEvent", "trackException", "trackMetric", "trackPageView", "trackTrace", "trackAjax", "setAuthenticatedUserContext", "clearAuthenticatedUserContext"];
@@ -26163,7 +26166,7 @@
 	
 	                // collect global errors
 	                if (!aiConfig.disableExceptionTracking) {
-	                    createLazyMethod("_onerror");
+	                    AppInsights._createLazyMethod("_onerror");
 	                    var originalOnError = window["_onerror"];
 	                    window[method] = function (message, url, lineNumber, columnNumber, error) {
 	                        var handled = originalOnError && originalOnError(message, url, lineNumber, columnNumber, error);
