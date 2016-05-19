@@ -1,6 +1,51 @@
-var aijs=require("imports?this=>window!../../../../node_modules/applicationinsights-js/dist/ai.0.js");
-export default class AppInsights {    
-   static test(){
-      console.log(JSON.stringify(tis));
+export default class AppInsights {
+    static _createLazyMethod(name) {
+        // Define a temporary method that queues-up a the real method call
+        appInsights[name] = function() {
+            // Capture the original arguments passed to the method
+            var originalArguments = arguments;
+            // Queue-up a call to the real method
+            appInsights.queue.push(function() {
+                // Invoke the real method with the captured original arguments
+                appInsights[name].apply(appInsights, originalArguments);
+            });
+        }
+
+        AppInsights[name] = appInsights[name];
+    };
+
+    static initialize(aiConfig) {
+        if (!window.appInsights) {
+            window.appInsights = {
+                config: aiConfig
+            };
+
+            var scriptElement = document.createElement("script");
+            scriptElement.src = "http://az416426.vo.msecnd.net/scripts/a/ai.0.js";
+            document.head.appendChild(scriptElement);
+
+            // capture initial cookie
+            appInsights.cookie = localDocument.cookie;
+            appInsights.queue = [];
+
+            var method = ["trackEvent", "trackException", "trackMetric", "trackPageView", "trackTrace", "trackAjax","setAuthenticatedUserContext","clearAuthenticatedUserContext"];
+            while (method.length) {
+                AppInsights._createLazyMethod(method.pop());
+            }
+
+            // collect global errors
+            if (!aiConfig.disableExceptionTracking) {
+                createLazyMethod("_onerror");
+                var originalOnError = window["_onerror"];
+                window[method] = function(message, url, lineNumber, columnNumber, error) {
+                    var handled = originalOnError && originalOnError(message, url, lineNumber, columnNumber, error);
+                    if (handled !== true) {
+                        appInsights["_onerror"](message, url, lineNumber, columnNumber, error);
+                    }
+
+                    return handled;
+                };
+            }
+        }
     }
 }

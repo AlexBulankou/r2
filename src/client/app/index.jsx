@@ -18,4 +18,7 @@ ReactDOM.render(
         </Route>
     </Router>, 
  app);
-AppInsights.test();
+AppInsights.initialize({
+    instrumentationKey:"9620fb22-8eb0-4575-80df-696352b08283"
+    });
+AppInsights.trackTrace("hello");
