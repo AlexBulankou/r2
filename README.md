@@ -9,3 +9,4 @@ https://www.codementor.io/reactjs/tutorial/beginner-guide-setup-reactjs-environm
 * Making webpack watch changes ``.\node_modules\.bin\webpack -d --watch``
 * Reloading with webpack-dev-server (not working on Windows): ``.\node_modules\.bin\webpack-dev-server --content-base src --hot --watch --inline``
 * Install react router ``npm install -S react-router``
+* Install jest-cli ``npm install --save-dev jest-cli babel-jest babel-polyfill``

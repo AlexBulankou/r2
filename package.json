@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -16,5 +16,11 @@
     "react-dom": "^0.14.7",
     "react-router": "^2.4.0",
     "webpack": "^1.13.0"
+  },
+  "devDependencies": {
+    "babel-jest": "^12.0.2",
+    "babel-polyfill": "^6.9.0",
+    "jest-cli": "^12.0.2",
+    "script-loader":"*"
   }
 }

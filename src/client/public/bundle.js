@@ -75,7 +75,7 @@
 	
 	var _Settings2 = _interopRequireDefault(_Settings);
 	
-	var _AppInsights = __webpack_require__(/*! ./components/AppInsights.js */ 224);
+	var _AppInsights = __webpack_require__(/*! ./components/AppInsights.js */ 227);
 	
 	var _AppInsights2 = _interopRequireDefault(_AppInsights);
 	
@@ -277,6 +277,9 @@
 	var queueIndex = -1;
 	
 	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
 	    draining = false;
 	    if (currentQueue.length) {
 	        queue = currentQueue.concat(queue);
@@ -8203,10 +8206,6 @@
 	  }
 	};
 	
-	function registerNullComponentID() {
-	  ReactEmptyComponentRegistry.registerNullComponentID(this._rootNodeID);
-	}
-	
 	var ReactEmptyComponent = function (instantiate) {
 	  this._currentElement = null;
 	  this._rootNodeID = null;
@@ -8215,7 +8214,7 @@
 	assign(ReactEmptyComponent.prototype, {
 	  construct: function (element) {},
 	  mountComponent: function (rootID, transaction, context) {
-	    transaction.getReactMountReady().enqueue(registerNullComponentID, this);
+	    ReactEmptyComponentRegistry.registerNullComponentID(rootID);
 	    this._rootNodeID = rootID;
 	    return ReactReconciler.mountComponent(this._renderedComponent, rootID, transaction, context);
 	  },
@@ -19172,7 +19171,7 @@
 	
 	'use strict';
 	
-	module.exports = '0.14.8';
+	module.exports = '0.14.7';
 
 /***/ },
 /* 147 */
@@ -24452,13 +24451,15 @@
 	};
 	
 	module.exports = function hoistNonReactStatics(targetComponent, sourceComponent) {
-	    var keys = Object.getOwnPropertyNames(sourceComponent);
-	    for (var i=0; i<keys.length; ++i) {
-	        if (!REACT_STATICS[keys[i]] && !KNOWN_STATICS[keys[i]]) {
-	            try {
-	                targetComponent[keys[i]] = sourceComponent[keys[i]];
-	            } catch (error) {
+	    if (typeof sourceComponent !== 'string') { // don't hoist over string (html) components
+	        var keys = Object.getOwnPropertyNames(sourceComponent);
+	        for (var i=0; i<keys.length; ++i) {
+	            if (!REACT_STATICS[keys[i]] && !KNOWN_STATICS[keys[i]]) {
+	                try {
+	                    targetComponent[keys[i]] = sourceComponent[keys[i]];
+	                } catch (error) {
 	
+	                }
 	            }
 	        }
 	    }
@@ -26106,7 +26107,10 @@
 	exports.default = Settings;
 
 /***/ },
-/* 224 */
+/* 224 */,
+/* 225 */,
+/* 226 */,
+/* 227 */
 /*!**************************************************!*\
   !*** ./src/client/app/components/AppInsights.js ***!
   \**************************************************/
@@ -26134,11 +26138,15 @@
 	            appInsights[name] = function () {
 	                // Capture the original arguments passed to the method
 	                var originalArguments = arguments;
-	                // Queue-up a call to the real method
-	                appInsights.queue.push(function () {
-	                    // Invoke the real method with the captured original arguments
+	                // If the queue is available, it means that the function wasn't yet replaced with actual function value
+	                if (appInsights.queue) {
+	                    appInsights.queue.push(function () {
+	                        return appInsights[name].apply(appInsights, originalArguments);
+	                    });
+	                } else {
+	                    // otheriwse execute the function
 	                    appInsights[name].apply(appInsights, originalArguments);
-	                });
+	                }
 	            };
 	
 	            AppInsights[name] = appInsights[name];
@@ -26183,7 +26191,7 @@
 	
 	    return AppInsights;
 	}();
-	
+
 	exports.default = AppInsights;
 
 /***/ }
