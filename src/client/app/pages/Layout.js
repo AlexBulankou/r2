@@ -3,7 +3,7 @@ import {Link} from "react-router";
 
 export default class Layout extends React.Component{
     navigate(){
-        this.props.history.pushState(null, "/");
+        this.props.history.push("/settings");
     }
     render(){      
         return(
@@ -20,7 +20,7 @@ export default class Layout extends React.Component{
                     settings
                 </button>
                </Link>
-               <button onClick={this.navigate.bind(this)}>featured</button>
+               <button onClick={this.navigate.bind(this)}>settings</button>
             </div>
         );
     }

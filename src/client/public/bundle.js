@@ -75,7 +75,7 @@
 	
 	var _Settings2 = _interopRequireDefault(_Settings);
 	
-	var _AppInsights = __webpack_require__(/*! ./components/AppInsights.js */ 227);
+	var _AppInsights = __webpack_require__(/*! ./components/AppInsights.js */ 224);
 	
 	var _AppInsights2 = _interopRequireDefault(_AppInsights);
 	
@@ -87,15 +87,29 @@
 	
 	var app = document.getElementById("app");
 	var routes = _react2.default.createElement(
-	       _reactRouter.Route,
-	       { path: '/', component: _Layout2.default },
-	       _react2.default.createElement(_reactRouter.IndexRoute, { component: _Featured2.default }),
-	       _react2.default.createElement(_reactRouter.Route, { path: 'archives', component: _Archive2.default }),
-	       _react2.default.createElement(_reactRouter.Route, { path: 'featured', component: _Featured2.default }),
-	       _react2.default.createElement(_reactRouter.Route, { path: 'settings', component: _Settings2.default })
+	   _reactRouter.Route,
+	   { path: '/', component: _Layout2.default },
+	   _react2.default.createElement(_reactRouter.IndexRoute, { component: _Featured2.default }),
+	   _react2.default.createElement(_reactRouter.Route, { path: 'archives', component: _Archive2.default }),
+	   _react2.default.createElement(_reactRouter.Route, { path: 'featured', component: _Featured2.default }),
+	   _react2.default.createElement(_reactRouter.Route, { path: 'settings', component: _Settings2.default })
 	);
 	
-	_reactDom2.default.render(_react2.default.createElement(_reactRouter.Router, { history: _reactRouter.hashHistory, routes: routes }), app);
+	var onUpdate = function onUpdate() {
+	   console.log(JSON.stringify(this.state.location));
+	};
+	var router = _react2.default.createElement(_reactRouter.Router, { history: _reactRouter.hashHistory, routes: routes, onUpdate: onUpdate });
+	
+	_reactRouter.hashHistory.listen(function () {
+	   return console.log("historyListen");
+	});
+	_reactRouter.hashHistory.listenBefore(function () {
+	   return console.log("historyListenBefore");
+	});
+	
+	//router.props.onUpdate = onUpdate.bind(router);
+	
+	_reactDom2.default.render(router, app);
 	
 	_AppInsights2.default.initialize({ instrumentationKey: "9620fb22-8eb0-4575-80df-696352b08283" });
 	_AppInsights2.default.trackTrace("hello");
@@ -277,9 +291,6 @@
 	var queueIndex = -1;
 	
 	function cleanUpNextTick() {
-	    if (!draining || !currentQueue) {
-	        return;
-	    }
 	    draining = false;
 	    if (currentQueue.length) {
 	        queue = currentQueue.concat(queue);
@@ -8206,6 +8217,10 @@
 	  }
 	};
 	
+	function registerNullComponentID() {
+	  ReactEmptyComponentRegistry.registerNullComponentID(this._rootNodeID);
+	}
+	
 	var ReactEmptyComponent = function (instantiate) {
 	  this._currentElement = null;
 	  this._rootNodeID = null;
@@ -8214,7 +8229,7 @@
 	assign(ReactEmptyComponent.prototype, {
 	  construct: function (element) {},
 	  mountComponent: function (rootID, transaction, context) {
-	    ReactEmptyComponentRegistry.registerNullComponentID(rootID);
+	    transaction.getReactMountReady().enqueue(registerNullComponentID, this);
 	    this._rootNodeID = rootID;
 	    return ReactReconciler.mountComponent(this._renderedComponent, rootID, transaction, context);
 	  },
@@ -19171,7 +19186,7 @@
 	
 	'use strict';
 	
-	module.exports = '0.14.7';
+	module.exports = '0.14.8';
 
 /***/ },
 /* 147 */
@@ -24451,15 +24466,13 @@
 	};
 	
 	module.exports = function hoistNonReactStatics(targetComponent, sourceComponent) {
-	    if (typeof sourceComponent !== 'string') { // don't hoist over string (html) components
-	        var keys = Object.getOwnPropertyNames(sourceComponent);
-	        for (var i=0; i<keys.length; ++i) {
-	            if (!REACT_STATICS[keys[i]] && !KNOWN_STATICS[keys[i]]) {
-	                try {
-	                    targetComponent[keys[i]] = sourceComponent[keys[i]];
-	                } catch (error) {
+	    var keys = Object.getOwnPropertyNames(sourceComponent);
+	    for (var i=0; i<keys.length; ++i) {
+	        if (!REACT_STATICS[keys[i]] && !KNOWN_STATICS[keys[i]]) {
+	            try {
+	                targetComponent[keys[i]] = sourceComponent[keys[i]];
+	            } catch (error) {
 	
-	                }
 	            }
 	        }
 	    }
@@ -25904,7 +25917,7 @@
 	    _createClass(Layout, [{
 	        key: "navigate",
 	        value: function navigate() {
-	            this.props.history.pushState(null, "/");
+	            this.props.history.push("/settings");
 	        }
 	    }, {
 	        key: "render",
@@ -25939,7 +25952,7 @@
 	                _react2.default.createElement(
 	                    "button",
 	                    { onClick: this.navigate.bind(this) },
-	                    "featured"
+	                    "settings"
 	                )
 	            );
 	        }
@@ -26107,10 +26120,7 @@
 	exports.default = Settings;
 
 /***/ },
-/* 224 */,
-/* 225 */,
-/* 226 */,
-/* 227 */
+/* 224 */
 /*!**************************************************!*\
   !*** ./src/client/app/components/AppInsights.js ***!
   \**************************************************/
@@ -26191,7 +26201,7 @@
 	
 	    return AppInsights;
 	}();
-
+	
 	exports.default = AppInsights;
 
 /***/ }

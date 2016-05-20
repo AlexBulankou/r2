@@ -2,7 +2,7 @@
 //http://www.pshrmn.com/tutorials/react/react-router/
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Router, Route, IndexRoute, hashHistory} from "react-router";
+import {Router, Route, IndexRoute, hashHistory, match} from "react-router";
 import Layout from "./pages/Layout.js";
 import Featured from "./pages/Featured.js";
 import Archives from "./pages/Archive.js";
@@ -17,10 +17,20 @@ const routes = (
             <Route path="featured" component={Featured}></Route>
             <Route path="settings" component={Settings}></Route>
         </Route>);
+        
+const onUpdate = function(){console.log(JSON.stringify(this.state.location))};
+const router =  (
+   <Router history={hashHistory} routes={routes} onUpdate={onUpdate} />  
+);
 
-ReactDOM.render(   
-    <Router history={hashHistory} routes={routes}/>,
- app);
+
+hashHistory.listen(()=>console.log("historyListen"));
+hashHistory.listenBefore(()=>console.log("historyListenBefore"));
+
+//router.props.onUpdate = onUpdate.bind(router);
+
+
+ReactDOM.render(router, app);
 
 AppInsights.initialize({instrumentationKey:"9620fb22-8eb0-4575-80df-696352b08283"});
 AppInsights.trackTrace("hello");
