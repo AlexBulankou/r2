@@ -8,6 +8,7 @@ import Featured from "./pages/Featured.js";
 import Archives from "./pages/Archive.js";
 import Settings from "./pages/Settings.js";
 import AppInsights from "./components/AppInsights.js"
+import {createHistory} from 'history';
 
 const app = document.getElementById("app");
 const routes = (
@@ -24,11 +25,18 @@ const router =  (
 );
 
 
-hashHistory.listen(()=>console.log("historyListen"));
-hashHistory.listenBefore(()=>console.log("historyListenBefore"));
+//hashHistory.listen(()=>console.log("historyListen"));
+//hashHistory.listenBefore(()=>console.log("historyListenBefore"));
 
-//router.props.onUpdate = onUpdate.bind(router);
 
+const history = createHistory();
+history.listen(location => {
+  console.log("listen: " + location.pathname)
+})
+
+history.listenBefore(location => {
+  console.log("listenBefore: " + location.pathname)
+})
 
 ReactDOM.render(router, app);
 
