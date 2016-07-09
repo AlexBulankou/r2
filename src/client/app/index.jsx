@@ -7,7 +7,7 @@ import Layout from "./pages/Layout.js";
 import Featured from "./pages/Featured.js";
 import Archives from "./pages/Archive.js";
 import Settings from "./pages/Settings.js";
-import AppInsights from "./components/AppInsights.js"
+import {AppInsights} from "applicationinsights-js"
 import {createHistory} from 'history';
 
 const app = document.getElementById("app");
@@ -40,5 +40,5 @@ history.listenBefore(location => {
 
 ReactDOM.render(router, app);
 
-AppInsights.initialize({instrumentationKey:"9620fb22-8eb0-4575-80df-696352b08283"});
+AppInsights.downloadAndSetup({instrumentationKey:"9620fb22-8eb0-4575-80df-696352b08283"});
 AppInsights.trackTrace("hello");

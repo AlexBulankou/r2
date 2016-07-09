@@ -75,9 +75,7 @@
 	
 	var _Settings2 = _interopRequireDefault(_Settings);
 	
-	var _AppInsights = __webpack_require__(/*! ./components/AppInsights.js */ 224);
-	
-	var _AppInsights2 = _interopRequireDefault(_AppInsights);
+	var _applicationinsightsJs = __webpack_require__(/*! applicationinsights-js */ 224);
 	
 	var _history = __webpack_require__(/*! history */ 225);
 	
@@ -114,8 +112,8 @@
 	
 	_reactDom2.default.render(router, app);
 	
-	_AppInsights2.default.initialize({ instrumentationKey: "9620fb22-8eb0-4575-80df-696352b08283" });
-	_AppInsights2.default.trackTrace("hello");
+	_applicationinsightsJs.AppInsights.downloadAndSetup({ instrumentationKey: "9620fb22-8eb0-4575-80df-696352b08283" });
+	_applicationinsightsJs.AppInsights.trackTrace("hello");
 
 /***/ },
 /* 1 */
@@ -26125,88 +26123,86 @@
 
 /***/ },
 /* 224 */
-/*!**************************************************!*\
-  !*** ./src/client/app/components/AppInsights.js ***!
-  \**************************************************/
-/***/ function(module, exports) {
+/*!***************************************************************************************!*\
+  !*** ./~/applicationinsights-js/JavaScript/JavaScriptSDK.Module/AppInsightsModule.js ***!
+  \***************************************************************************************/
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var AppInsights = function () {
-	    function AppInsights() {
-	        _classCallCheck(this, AppInsights);
-	    }
-	
-	    _createClass(AppInsights, null, [{
-	        key: "_createLazyMethod",
-	        value: function _createLazyMethod(name) {
-	            // Define a temporary method that queues-up a the real method call
-	            appInsights[name] = function () {
-	                // Capture the original arguments passed to the method
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__, exports], __WEBPACK_AMD_DEFINE_RESULT__ = function (require, exports) {
+	    "use strict";
+	    var AppInsightsModule = (function () {
+	        function AppInsightsModule() {
+	        }
+	        AppInsightsModule._createLazyMethod = function (name) {
+	            var aiObject = AppInsightsModule.appInsightsInstance;
+	            aiObject[name] = function () {
 	                var originalArguments = arguments;
-	                // If the queue is available, it means that the function wasn't yet replaced with actual function value
-	                if (appInsights.queue) {
-	                    appInsights.queue.push(function () {
-	                        return appInsights[name].apply(appInsights, originalArguments);
-	                    });
-	                } else {
-	                    // otheriwse execute the function
-	                    appInsights[name].apply(appInsights, originalArguments);
+	                if (aiObject.queue) {
+	                    aiObject.queue.push(function () { return aiObject[name].apply(aiObject, originalArguments); });
+	                }
+	                else {
+	                    aiObject[name].apply(aiObject, originalArguments);
 	                }
 	            };
-	
-	            AppInsights[name] = appInsights[name];
-	        }
-	    }, {
-	        key: "initialize",
-	        value: function initialize(aiConfig) {
-	            if (!window.appInsights) {
-	                window.appInsights = {
-	                    config: aiConfig
+	        };
+	        ;
+	        AppInsightsModule._download = function (aiConfig) {
+	            AppInsightsModule.appInsightsInstance.config = aiConfig;
+	            var scriptElement = document.createElement("script");
+	            scriptElement.src = aiConfig.url || "http://az416426.vo.msecnd.net/scripts/a/ai.0.js";
+	            document.head.appendChild(scriptElement);
+	            var aiObject = AppInsightsModule.appInsightsInstance;
+	            aiObject.cookie = document.cookie;
+	            aiObject.queue = [];
+	            var method = [
+	                "clearAuthenticatedUserContext",
+	                "flush",
+	                "setAuthenticatedUserContext",
+	                "startTrackEvent",
+	                "startTrackPage",
+	                "stopTrackEvent",
+	                "stopTrackPage",
+	                "trackAjax",
+	                "trackEvent",
+	                "trackException",
+	                "trackMetric",
+	                "trackPageView",
+	                "trackTrace"
+	            ];
+	            while (method.length) {
+	                AppInsightsModule._createLazyMethod(method.pop());
+	            }
+	            if (!aiConfig.disableExceptionTracking) {
+	                AppInsightsModule._createLazyMethod("_onerror");
+	                var originalOnError = window["_onerror"];
+	                window["_onerror"] = function (message, url, lineNumber, columnNumber, error) {
+	                    var handled = originalOnError && originalOnError(message, url, lineNumber, columnNumber, error);
+	                    if (handled !== true) {
+	                        aiObject["_onerror"](message, url, lineNumber, columnNumber, error);
+	                    }
+	                    return handled;
 	                };
-	
-	                var scriptElement = document.createElement("script");
-	                scriptElement.src = "http://az416426.vo.msecnd.net/scripts/a/ai.0.js";
-	                document.head.appendChild(scriptElement);
-	
-	                // capture initial cookie
-	                appInsights.cookie = document.cookie;
-	                appInsights.queue = [];
-	
-	                var method = ["trackEvent", "trackException", "trackMetric", "trackPageView", "trackTrace", "trackAjax", "setAuthenticatedUserContext", "clearAuthenticatedUserContext"];
-	                while (method.length) {
-	                    AppInsights._createLazyMethod(method.pop());
-	                }
-	
-	                // collect global errors
-	                if (!aiConfig.disableExceptionTracking) {
-	                    AppInsights._createLazyMethod("_onerror");
-	                    var originalOnError = window["_onerror"];
-	                    window[method] = function (message, url, lineNumber, columnNumber, error) {
-	                        var handled = originalOnError && originalOnError(message, url, lineNumber, columnNumber, error);
-	                        if (handled !== true) {
-	                            appInsights["_onerror"](message, url, lineNumber, columnNumber, error);
-	                        }
-	
-	                        return handled;
+	            }
+	        };
+	        Object.defineProperty(AppInsightsModule, "appInsightsInstance", {
+	            get: function () {
+	                if (!window[AppInsightsModule.appInsightsName]) {
+	                    window[AppInsightsModule.appInsightsName] = {
+	                        downloadAndSetup: AppInsightsModule._download
 	                    };
 	                }
-	            }
-	        }
-	    }]);
-	
-	    return AppInsights;
-	}();
+	                return window[AppInsightsModule.appInsightsName];
+	            },
+	            enumerable: true,
+	            configurable: true
+	        });
+	        AppInsightsModule.appInsightsInitialized = false;
+	        AppInsightsModule.appInsightsName = "appInsights";
+	        return AppInsightsModule;
+	    }());
+	    exports.AppInsights = AppInsightsModule.appInsightsInstance;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-	exports.default = AppInsights;
 
 /***/ },
 /* 225 */
